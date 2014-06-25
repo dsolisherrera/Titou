@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="song_title_fontsize">22dp</dimen>
+	<dimen name="song_art_fontsize">18dp</dimen>
+	<dimen name="list_item_padding">20dp</dimen>
+</resources>

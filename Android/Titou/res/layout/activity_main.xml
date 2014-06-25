@@ -1,0 +1,163 @@
+<!-- Copyright (C) 2013 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@android:style/Theme.Holo.Light" 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+       
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/player_background">
+
+    <LinearLayout
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+	        android:id="@+id/playerHigher"
+	        android:layout_width="match_parent"
+	        android:layout_height="300dp"> 
+        	        
+	        <!-- Previous Button -->
+            <ImageButton
+                android:id="@+id/btnPrevious"
+                android:contentDescription="@string/img_desc" 
+                android:src="@drawable/btn_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="20dp"
+                android:background="@null"/>
+            
+			<FrameLayout
+			    android:id="@+id/frame_player"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_centerInParent="true">
+			    
+			    
+			    <!-- quick and ugly fix for centering using margin-->
+			    <WebView
+	                android:id="@+id/webViewGif"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center"
+	                android:layout_marginLeft = "41dp"
+	                android:scaleType="center"
+	                android:background="@null"/>
+			    
+	            <!-- Play Button -->
+	            <ImageButton 
+	                android:id="@+id/btnPlay"
+	                android:contentDescription="@string/img_desc"
+	                android:src="@drawable/btn_play"             
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	        		android:layout_gravity="center"
+	                android:background="@null"/>
+			</FrameLayout>
+
+
+            <!-- Next Button -->
+            <ImageButton 
+                android:id="@+id/btnNext"
+                android:contentDescription="@string/img_desc"
+                android:src="@drawable/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="20dp"
+                android:background="@null"/>
+
+        </RelativeLayout>
+        
+       <RelativeLayout
+	       android:id="@+id/playerLower"
+	       android:layout_width="match_parent"
+	       android:layout_height="100dp">
+	       
+	       <ImageButton 
+	           android:id="@+id/btnShareSong"
+	           android:contentDescription="@string/img_desc"
+	           android:src="@drawable/img_btn_share"
+	           android:layout_width="wrap_content"
+	           android:layout_height="fill_parent"
+	           android:layout_alignParentLeft="true"
+               android:layout_centerVertical="true"
+               android:paddingLeft="20dp"
+	           android:background="@null"/>
+           
+	       <RelativeLayout  
+		       android:id="@+id/songInfo"
+		       android:layout_width="wrap_content"
+		       android:layout_height="wrap_content"
+		       android:layout_centerInParent="true" 
+		       android:orientation="vertical">
+		       
+		       <TextView
+	               android:id="@+id/songTitle"
+	               android:layout_width="wrap_content"
+	               android:layout_height="wrap_content"
+	               android:layout_centerHorizontal="true"
+	               android:text="@string/def_song_title"
+	               android:textColor="@color/song_title_color"
+	               android:textSize="@dimen/song_title_fontsize"
+	               android:textStyle="bold" />
+		           
+		       <TextView
+		           android:id="@+id/songArtist"
+		           android:layout_width="wrap_content"
+		           android:layout_height="wrap_content"
+		           android:layout_centerHorizontal="true"
+		           android:layout_below="@id/songTitle"
+		           android:text="@string/def_song_artist"
+		           android:textColor="@color/song_artist_color"
+		           android:textSize="@dimen/song_art_fontsize"
+		           android:textStyle="" />
+
+	    	</RelativeLayout> 
+	    	
+	    	<ImageButton 
+	           android:id="@+id/btnContamination"
+	           android:contentDescription="@string/img_desc"
+	           android:src="@drawable/img_btn_contamination"
+	           android:layout_width="wrap_content"
+	           android:layout_height="fill_parent"
+	           android:layout_alignParentRight="true"
+               android:layout_centerVertical="true"
+               android:paddingRight="20dp"
+	           android:background="@null"/>
+	       
+	       
+        </RelativeLayout>
+        
+    </LinearLayout>
+
+    <com.ilariabaggio.titou.ExpandingListView        
+        android:id="@+id/exp_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".MainActivity" >
+    </com.ilariabaggio.titou.ExpandingListView>
+</LinearLayout>
+
+</ScrollView>

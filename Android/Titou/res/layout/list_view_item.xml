@@ -1,0 +1,147 @@
+<!-- Copyright (C) 2013 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@layout/list_item_back"
+    android:orientation="vertical">
+   
+    
+	<RelativeLayout
+        android:id="@+id/item_relative_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+              
+        <RelativeLayout  
+	       android:id="@+id/songInfo_list"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+           android:layout_alignParentLeft="true">
+
+	       
+	       <TextView
+               android:id="@+id/songTitle_list"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:paddingTop="@dimen/list_item_padding"
+       		   android:paddingLeft="@dimen/list_item_padding"
+               android:text="@string/def_song_title"
+               android:textColor="@color/song_title_color"
+               android:textSize="@dimen/song_title_fontsize"
+               android:textStyle="bold"/>
+	       	   
+	       <TextView
+	           android:id="@+id/songArtist_list"
+	           android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_below="@id/songTitle_list"
+       		   android:paddingLeft="@dimen/list_item_padding"
+	           android:text="@string/def_song_artist"
+	           android:textColor="@color/song_artist_color"
+	           android:textSize="@dimen/song_art_fontsize"
+	           android:textStyle="" />
+
+    	</RelativeLayout>
+        
+         <ImageView
+            android:id="@+id/temperature_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="@dimen/list_item_padding"
+            android:paddingTop="@dimen/list_item_padding"
+            android:contentDescription="@string/img_desc"
+            android:src="@drawable/temperature_low"/>
+             	
+        <ImageView
+            android:id="@+id/sweat_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_toLeftOf="@id/temperature_view"
+            android:paddingRight="@dimen/list_item_padding"
+            android:paddingTop="@dimen/list_item_padding"
+            android:contentDescription="@string/img_desc"
+            android:src="@drawable/sweat_low"/>
+        
+    	 <ImageView
+            android:id="@+id/beat_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+			android:layout_toLeftOf="@id/sweat_view"
+            android:paddingRight="@dimen/list_item_padding"
+            android:paddingTop="@dimen/list_item_padding"
+            android:contentDescription="@string/img_desc"
+            android:src="@drawable/beat_low"/>
+    	                  
+
+
+        
+    </RelativeLayout>
+
+    <com.ilariabaggio.titou.ExpandingLayout
+            android:id="@+id/expanding_layout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:visibility="gone">
+         
+       <RelativeLayout
+	        android:id="@+id/exp_item_linear_layout"
+	        android:layout_height="wrap_content"
+	        android:layout_width="match_parent">
+		       
+	       <ImageView
+	            android:id="@+id/location_icon_view"
+	            android:layout_height="wrap_content"
+	            android:layout_width="wrap_content"
+	            android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+	            android:paddingLeft="@dimen/list_item_padding"
+	            android:paddingBottom="@dimen/list_item_padding"
+	            android:contentDescription="@string/img_desc"
+	            android:src="@drawable/location_icon"/>
+
+	       <TextView
+               android:id="@+id/location_text_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+	           android:layout_toRightOf="@id/location_icon_view"
+               android:layout_centerVertical="true"
+	           android:paddingLeft="@dimen/list_item_padding"
+	           android:paddingBottom="@dimen/list_item_padding"
+               android:text="@string/def_song_title"
+               android:textColor="@color/song_title_color"
+               android:textSize="@dimen/song_title_fontsize"
+               android:textStyle="" />
+	           
+	       <TextView
+	           android:id="@+id/location_time_view"
+	           android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:layout_alignParentRight="true"
+               android:layout_centerVertical="true"
+	           android:layout_gravity="right"
+	           android:paddingRight="@dimen/list_item_padding"
+	           android:paddingBottom="@dimen/list_item_padding"
+	           android:text="@string/def_song_artist"
+	           android:textColor="@color/song_artist_color"
+	           android:textSize="@dimen/song_art_fontsize"
+	           android:textStyle="" />
+	
+	    </RelativeLayout>
+
+    </com.ilariabaggio.titou.ExpandingLayout>
+
+</LinearLayout>
