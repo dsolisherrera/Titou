@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -72,14 +73,13 @@ public class CustomArrayAdapter extends ArrayAdapter<ExpandableListItem> {
 
         TextView songTitleView = (TextView)convertView.findViewById(R.id.songTitle_list);
         TextView songArtistView = (TextView)convertView.findViewById(R.id.songArtist_list);
-        //ImageView imgView = (ImageView)convertView.findViewById(R.id.);
+        ImageView beat_view = (ImageView)convertView.findViewById(R.id.beat_view);
         TextView loctextView = (TextView)convertView.findViewById(R.id.location_text_view);
         TextView loctimetextView = (TextView)convertView.findViewById(R.id.location_time_view);
 
         songTitleView.setText(object.getSongTitle());
         songArtistView.setText(object.getSongArtist());
-        //imgView.setImageBitmap(getCroppedBitmap(BitmapFactory.decodeResource(getContext()
-        //        .getResources(), object.getImgResource(), null)));
+        beat_view.setImageResource(object.getBPM_level());
         loctextView.setText(object.getLoc());
         loctimetextView.setText(object.getLocTime());
 

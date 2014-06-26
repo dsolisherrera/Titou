@@ -29,18 +29,19 @@ public class ExpandableListItem implements OnSizeChangedListener {
     private String mLocation;
     private String mLocationTime;
     private boolean mIsExpanded;
-    private int mImgResource;
+    private int mBPM_level;
     private int mCollapsedHeight;
     private int mExpandedHeight;
 
     public ExpandableListItem(String title, String artist, int collapsedHeight,
-    		String location, String locationTime){
+    		String location, String locationTime,int BPM_level){
         mSongTitle = title;
         mSongArtist = artist;
         mCollapsedHeight = collapsedHeight;
         mIsExpanded = false;
         mLocation = location;
         mLocationTime = locationTime;
+        mBPM_level = BPM_level;
         mExpandedHeight = -1;
     }
 
@@ -60,8 +61,8 @@ public class ExpandableListItem implements OnSizeChangedListener {
         return mSongArtist;
     }
     
-    public int getImgResource() {
-        return mImgResource;
+    public int getBPM_level() {
+        return mBPM_level;
     }
 
     public int getCollapsedHeight() {

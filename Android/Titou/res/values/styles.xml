@@ -5,6 +5,13 @@
     <color name="list_border">#C6C6C6</color>
     <color name="list_textTitle_color">#3C3C3B</color>
     <color name="list_text_color">#3C3C3B</color>
-	<color name="song_artist_color">#3C3C3B</color>
-	<color name="song_title_color">#3C3C3B</color>	
+	<color name="song_artist_color">#FFFFFF</color>
+	<color name="song_title_color">#FFFFFF</color>
+	<color name="back_lowest">#002F55</color>
+	<color name="back_low">#15BAE6</color>
+	<color name="back_middle_low">#86BC24</color>
+	<color name="back_middle_high">#FCC306</color>
+	<color name="back_high">#FF5000</color>
+	<color name="back_highest">#B51F29</color>
+		
 </resources>

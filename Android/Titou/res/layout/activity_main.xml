@@ -21,14 +21,14 @@
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/player_background">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/player"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/player_background">
 
         <RelativeLayout
 	        android:id="@+id/playerHigher"
@@ -98,7 +98,7 @@
 	       <ImageButton 
 	           android:id="@+id/btnShareSong"
 	           android:contentDescription="@string/img_desc"
-	           android:src="@drawable/img_btn_share"
+	           android:src="@drawable/img_btn_share_low"
 	           android:layout_width="wrap_content"
 	           android:layout_height="fill_parent"
 	           android:layout_alignParentLeft="true"
@@ -139,14 +139,13 @@
 	    	<ImageButton 
 	           android:id="@+id/btnContamination"
 	           android:contentDescription="@string/img_desc"
-	           android:src="@drawable/img_btn_contamination"
+	           android:src="@drawable/img_btn_contamination_low"
 	           android:layout_width="wrap_content"
 	           android:layout_height="fill_parent"
 	           android:layout_alignParentRight="true"
                android:layout_centerVertical="true"
                android:paddingRight="20dp"
 	           android:background="@null"/>
-	       
 	       
         </RelativeLayout>
         

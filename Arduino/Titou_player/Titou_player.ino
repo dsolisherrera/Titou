@@ -7,7 +7,7 @@
 
 // Set debugging to true to get serial messages:
 
-boolean debugging = true;
+boolean debugging = false;
 
 // Initial volume for the MP3 chip. 0 is the loudest, 255
 // is the lowest.
@@ -49,14 +49,22 @@ boolean loop_all = true;
 #define MISO 12
 #define SCK 13
 
+
 // Global variables and flags for interrupt request functions:
 char track[13];
 char inChar;
 
+volatile int BPM;                   // used to hold the pulse rate
+volatile int Signal;                // holds the incoming raw data
+volatile int IBI = 600;             // holds the time between beats, must be seeded! 
+volatile boolean Pulse = false;     // true when pulse wave is high, false when it's low
+volatile boolean QS = false; 
+
+//Sensor
+int pin_sensor = TRIG1;
 // Touch Button
 OneButton moment_button(ROT_LEDG);
-OneButton audio_button(TRIG1);
-
+OneButton audio_button(TRIG2_SDA);
 
 // Library objects:
 
@@ -99,6 +107,7 @@ void setup(){
   audio_button.attachDoubleClick(audio_DoubleClickFunction);
   audio_button.attachTripleClick(audio_TripleClickFunction);
   //audio_button.setClickTicks(600);
+  interruptSetup(); 
  
  // Turn off amplifier chip / turn on MP3 mode:
 
@@ -234,14 +243,16 @@ void audio_TripleClickFunction(){
 // this function will be called when the button was pressed 1 time and them some time has passed.
 void moment_ClickFunction() {
   //if (debugging) Serial.println(F("Moment - One click"));
-  Serial.println("0");
+  Serial.print('M');
+  Serial.print(BPM);
+  Serial.print('\n');
 } 
-
 
 // this function will be called when the button was pressed 2 times in a short timeframe.
 void moment_DoubleClickFunction(){
   //if (debugging) Serial.println(F("Moment - Double click"));
-  Serial.println("1");
+  Serial.print('C');
+  Serial.print('\n');
 } 
 
 
