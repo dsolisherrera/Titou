@@ -35,7 +35,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +63,15 @@ public class Titou extends Activity {
     private int beat_img_list[] = {R.drawable.beat_lowest,R.drawable.beat_low,R.drawable.beat_middle_low,R.drawable.beat_middle_high,R.drawable.beat_high,R.drawable.beat_highest};
     private String back_color_list[] = {"#002F55","#15BAE6","#86BC24","#FCC306","#FF5000","#B51F29"};
     private ConnectedThread mConnectedThread;
+    private String songs[][] = {
+    		{"Beach Boys","California Girls"},
+    		{"Garbage","Run Baby Run"},
+    		{"Buffalo Springfield","For What Its Worth"},
+    		{"Brian Eno ","By this river"},
+    		{"Charles Aznavour","For me formidable"},
+    		{"Johnny Cash","Solitary Man"},
+    		{"The Troggs","With a girl like you"},
+    		}; 
     
     // SPP UUID service
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -101,18 +113,18 @@ public class Titou extends Activity {
         btnShareSong = (ImageButton) findViewById(R.id.btnShareSong);
         btnContamination = (ImageButton) findViewById(R.id.btnContamination);
         player = (LinearLayout) findViewById(R.id.player);
-        
+
         List<ExpandableListItem> mData = new ArrayList<ExpandableListItem>();
-        mData.add(new ExpandableListItem("Tender","Blur", CELL_DEFAULT_HEIGHT,"Library","20.6.2014",R.drawable.beat_middle_high));
-        mData.add(new ExpandableListItem("Jubel","Klingande", CELL_DEFAULT_HEIGHT,"Gym","18.6.2014",R.drawable.beat_high));
-        mData.add(new ExpandableListItem("Happy Pills","Nora Jones", CELL_DEFAULT_HEIGHT,"Home","17.6.2014",R.drawable.beat_lowest));
+        mData.add(new ExpandableListItem("Tender","Blur", CELL_DEFAULT_HEIGHT,"Library",R.drawable.beat_middle_high));
+        mData.add(new ExpandableListItem("Jubel","Klingande", CELL_DEFAULT_HEIGHT,"Gym",R.drawable.beat_high));
+        mData.add(new ExpandableListItem("Happy Pills","Nora Jones", CELL_DEFAULT_HEIGHT,"Home",R.drawable.beat_lowest));
         
         CustomArrayAdapter adapter = new CustomArrayAdapter(this, R.layout.list_view_item, mData);
         mListView = (ExpandingListView)findViewById(R.id.exp_list_view);
         mListView.setAdapter(adapter);
         mListView.setDivider(null);
         setListViewHeightBasedOnChildren(mListView);
-
+        
         hdler = new Handler() {
         	@Override
 			public void handleMessage(android.os.Message msg) {
@@ -141,14 +153,15 @@ public class Titou extends Activity {
                     	}
                     	else if (sbprint.charAt(0) == 'M' && Character.isDigit(sbprint.charAt(1))){
                     		sbprint.replaceAll("\n", "");
-                    		int BPM = Integer.parseInt(sbprint.substring(1, endOfLineIndex));
+                    		int song = sbprint.charAt(1);
+                    		int BPM = Integer.parseInt(sbprint.substring(2, endOfLineIndex));
                     		Log.d(TAG, "Raw BPM " + Integer.toString(BPM));
                     		if (BPM >= 200 )	BPM = 199;
                     		else if (BPM < 50) BPM = 50;
                     		int BPM_level = (int) Math.floor((float)BPM/25.00);
                     		BPM_level = BPM_level -2;
                     		Log.d(TAG, "Adding entry with BPM " + Integer.toString(BPM) + "and Level " + Integer.toString(BPM_level));
-                    		addEntryList(beat_img_list[BPM_level]);
+                    		addEntryList(song,beat_img_list[BPM_level]);
                     		player.setBackgroundColor(Color.parseColor(back_color_list[BPM_level]));
                     	} 
                     }
@@ -214,16 +227,15 @@ public class Titou extends Activity {
         
     }
     
-    public void addEntryList(int BPM_level){
+    public void addEntryList(int song,int BPM_level){
     	
-
         ExpandableListItem[] values = new ExpandableListItem[] {
-                new ExpandableListItem("Chameleon Fox","Jupiter", CELL_DEFAULT_HEIGHT,"Lugano","27.06.2014",BPM_level),
+                new ExpandableListItem(songs[song][0],songs[song][1], CELL_DEFAULT_HEIGHT,"Trevano",BPM_level),
         };
         
         ExpandableListItem obj = values[0];
         mData.add(0,new ExpandableListItem(obj.getSongTitle(),obj.getSongArtist(),
-                obj.getCollapsedHeight(), obj.getLoc(),obj.getLocTime(),obj.getBPM_level()));
+                obj.getCollapsedHeight(), obj.getLoc(),obj.getBPM_level()));
         
         CustomArrayAdapter adapter = new CustomArrayAdapter(this, R.layout.list_view_item, mData);
         mListView = (ExpandingListView)findViewById(R.id.exp_list_view);
@@ -379,15 +391,6 @@ public class Titou extends Activity {
 	            mmOutStream.write(message.getBytes());
 	        } catch (IOException e) {
 	            Log.d(TAG, "...Error data send: " + e.getMessage() + "...");     
-	          }
-	    }
-	    
-	    public void close(){
-	        try     {
-		    	mmOutStream.close();
-		    	mmInStream.close();
-	          } catch (IOException e2) {
-	            errorExit("Fatal Error", "In StreamClose() and failed to close socket." + e2.getMessage() + ".");
 	          }
 	    }
 	}

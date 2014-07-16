@@ -76,12 +76,15 @@ public class CustomArrayAdapter extends ArrayAdapter<ExpandableListItem> {
         ImageView beat_view = (ImageView)convertView.findViewById(R.id.beat_view);
         TextView loctextView = (TextView)convertView.findViewById(R.id.location_text_view);
         TextView loctimetextView = (TextView)convertView.findViewById(R.id.location_time_view);
+        TextView locdatetextView = (TextView)convertView.findViewById(R.id.location_date_view);
+        
 
         songTitleView.setText(object.getSongTitle());
         songArtistView.setText(object.getSongArtist());
         beat_view.setImageResource(object.getBPM_level());
         loctextView.setText(object.getLoc());
         loctimetextView.setText(object.getLocTime());
+        locdatetextView.setText(object.getLocDate());
 
         convertView.setLayoutParams(new ListView.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT));

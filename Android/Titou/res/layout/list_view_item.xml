@@ -109,7 +109,6 @@
 	            android:paddingBottom="@dimen/list_item_padding"
 	            android:contentDescription="@string/img_desc"
 	            android:src="@drawable/location_icon"/>
-
 	       <TextView
                android:id="@+id/location_text_view"
                android:layout_width="wrap_content"
@@ -122,21 +121,41 @@
                android:textColor="@color/list_text_color"
                android:textSize="@dimen/song_title_fontsize"
                android:textStyle="" />
-	           
-	       <TextView
-	           android:id="@+id/location_time_view"
-	           android:layout_width="wrap_content"
-	           android:layout_height="wrap_content"
-	           android:layout_alignParentRight="true"
-               android:layout_centerVertical="true"
-	           android:layout_gravity="right"
-	           android:paddingRight="@dimen/list_item_padding"
-	           android:paddingBottom="@dimen/list_item_padding"
-	           android:text="@string/def_song_artist"
-	           android:textColor="@color/list_text_color"
-	           android:textSize="@dimen/song_art_fontsize"
-	           android:textStyle="" />
-	
+	       
+	    	<RelativeLayout
+	    	    	android:id="@+id/exp_item_date_layout"
+	    	        android:layout_width="wrap_content"
+    				android:layout_height="wrap_content"
+    				android:layout_alignParentRight="true"
+    				android:layout_gravity="right">
+    				
+    		   <TextView
+					android:id="@+id/location_time_view"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingRight="@dimen/list_item_padding"
+					android:layout_alignRight = "@+id/location_date_view"
+					android:layout_gravity="right"
+					android:text="@string/def_song_artist"
+					android:textColor="@color/list_text_color"
+					android:textSize="@dimen/song_art_fontsize"
+					android:textStyle="" />
+    					      			
+		    	<TextView
+					android:id="@+id/location_date_view"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_below = "@+id/location_time_view"
+					android:paddingRight="@dimen/list_item_padding"
+					android:paddingBottom="@dimen/list_item_padding"
+					android:layout_gravity="right"
+					android:text="@string/def_song_artist"
+					android:textColor="@color/list_text_color"
+					android:textSize="@dimen/song_art_fontsize"
+					android:textStyle="" />
+
+		    	
+			</RelativeLayout>
 	    </RelativeLayout>
 
     </com.ilariabaggio.titou.ExpandingLayout>

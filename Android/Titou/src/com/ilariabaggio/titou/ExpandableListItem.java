@@ -16,6 +16,10 @@
 
 package com.ilariabaggio.titou;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * This custom object is used to populate the list adapter. It contains a reference
  * to an image, title, and the extra text to be displayed. Furthermore, it keeps track
@@ -28,19 +32,29 @@ public class ExpandableListItem implements OnSizeChangedListener {
     private String mSongArtist;
     private String mLocation;
     private String mLocationTime;
+    private String mLocationDate;
     private boolean mIsExpanded;
     private int mBPM_level;
     private int mCollapsedHeight;
     private int mExpandedHeight;
 
     public ExpandableListItem(String title, String artist, int collapsedHeight,
-    		String location, String locationTime,int BPM_level){
+    		String location,int BPM_level){
+    	
+        Calendar calendar;
+        calendar = Calendar.getInstance(); 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",java.util.Locale.getDefault());
+    	SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm",java.util.Locale.getDefault());
+    	
+        Date date = calendar.getTime();
+        
         mSongTitle = title;
         mSongArtist = artist;
         mCollapsedHeight = collapsedHeight;
         mIsExpanded = false;
         mLocation = location;
-        mLocationTime = locationTime;
+        mLocationDate = dateFormat.format(date);
+        mLocationTime = timeFormat.format(date);
         mBPM_level = BPM_level;
         mExpandedHeight = -1;
     }
@@ -88,6 +102,14 @@ public class ExpandableListItem implements OnSizeChangedListener {
     public void setLocTime(String text) {
     	mLocationTime = text;
     }
+    public String getLocDate() {
+        return mLocationDate;
+    }
+
+    public void setLocDate(String text) {
+    	mLocationDate = text;
+    }
+    
     public int getExpandedHeight() {
         return mExpandedHeight;
     }

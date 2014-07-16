@@ -83,21 +83,23 @@ public final class R {
         public static final int visual_2=0x7f020031;
     }
     public static final class id {
-        public static final int action_settings=0x7f08001a;
+        public static final int action_settings=0x7f08001c;
         public static final int beat_view=0x7f080014;
         public static final int btnContamination=0x7f08000c;
         public static final int btnNext=0x7f080006;
         public static final int btnPlay=0x7f080005;
         public static final int btnPrevious=0x7f080002;
         public static final int btnShareSong=0x7f080008;
+        public static final int exp_item_date_layout=0x7f080019;
         public static final int exp_item_linear_layout=0x7f080016;
         public static final int exp_list_view=0x7f08000d;
         public static final int expanding_layout=0x7f080015;
         public static final int frame_player=0x7f080003;
         public static final int item_relative_layout=0x7f08000e;
+        public static final int location_date_view=0x7f08001b;
         public static final int location_icon_view=0x7f080017;
         public static final int location_text_view=0x7f080018;
-        public static final int location_time_view=0x7f080019;
+        public static final int location_time_view=0x7f08001a;
         public static final int player=0x7f080000;
         public static final int playerHigher=0x7f080001;
         public static final int playerLower=0x7f080007;
