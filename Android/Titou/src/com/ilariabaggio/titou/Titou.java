@@ -29,16 +29,14 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,6 +53,7 @@ public class Titou extends Activity {
 
     private ExpandingListView mListView;
     private boolean contamination = false;
+    private boolean isPlaying = false;
     final int RECIEVE_MESSAGE = 1;		// Status  for Handler
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
@@ -63,14 +62,14 @@ public class Titou extends Activity {
     private int beat_img_list[] = {R.drawable.beat_lowest,R.drawable.beat_low,R.drawable.beat_middle_low,R.drawable.beat_middle_high,R.drawable.beat_high,R.drawable.beat_highest};
     private String back_color_list[] = {"#002F55","#15BAE6","#86BC24","#FCC306","#FF5000","#B51F29"};
     private ConnectedThread mConnectedThread;
-    private String songs[][] = {
+    private String [][] songs = {
     		{"Beach Boys","California Girls"},
     		{"Garbage","Run Baby Run"},
     		{"Buffalo Springfield","For What Its Worth"},
     		{"Brian Eno ","By this river"},
     		{"Charles Aznavour","For me formidable"},
     		{"Johnny Cash","Solitary Man"},
-    		{"The Troggs","With a girl like you"},
+    		{"The Troggs","With a girl like you"}
     		}; 
     
     // SPP UUID service
@@ -87,6 +86,8 @@ public class Titou extends Activity {
     ImageButton btnContamination;
     ImageButton btnShareSong;
     LinearLayout player;
+    TextView playerArtist;
+    TextView playerSong;
     
     WebView wvgif;
     
@@ -113,6 +114,8 @@ public class Titou extends Activity {
         btnShareSong = (ImageButton) findViewById(R.id.btnShareSong);
         btnContamination = (ImageButton) findViewById(R.id.btnContamination);
         player = (LinearLayout) findViewById(R.id.player);
+        playerArtist = (TextView) findViewById(R.id.songArtist);
+        playerSong = (TextView) findViewById(R.id.songTitle);
 
         List<ExpandableListItem> mData = new ArrayList<ExpandableListItem>();
         mData.add(new ExpandableListItem("Tender","Blur", CELL_DEFAULT_HEIGHT,"Library",R.drawable.beat_middle_high));
@@ -135,12 +138,35 @@ public class Titou extends Activity {
                 	sb.append(strIncom);// append string
                 	Log.d(TAG, "Message recived: " + strIncom);
                 	int endOfLineIndex = sb.indexOf("\n");// determine the end-of-line
-                	Log.d(TAG, Integer.toString(endOfLineIndex));
                 	if (endOfLineIndex > 0) { 											// if end-of-line,
                 		String sbprint = sb.substring(0, endOfLineIndex);				// extract string
                 		Log.d(TAG, sbprint);
                 		sb.delete(0, sb.length());
-                    	if (sbprint.charAt(0) == 'C'){
+                		if (sbprint.charAt(0) == 'P' && Character.isDigit(sbprint.charAt(1))){
+                			sbprint.replaceAll("\n", "");
+                    		int song = Character.getNumericValue(sbprint.charAt(1));
+                    		Log.d(TAG, "Song index " + Integer.toString(song));
+                    		playerArtist.setText(songs[song][0]);
+                    		playerSong.setText(songs[song][1]);
+            				if(isPlaying){
+            					btnPlay.setImageResource(R.drawable.btn_play);
+            					isPlaying = false;	
+            				}
+            				else{
+            					btnPlay.setImageResource(R.drawable.btn_pause);
+            					isPlaying = true;
+            				}
+                		}
+                		else if (sbprint.charAt(0) == 'S' && Character.isDigit(sbprint.charAt(1))){
+                			sbprint.replaceAll("\n", "");
+                    		int song = Character.getNumericValue(sbprint.charAt(1));
+                    		Log.d(TAG, "Song index " + Integer.toString(song));
+                    		playerArtist.setText(songs[song][0]);
+                    		playerSong.setText(songs[song][1]);
+                    		btnPlay.setImageResource(R.drawable.btn_pause);
+        					isPlaying = true;
+                		}
+                		else if (sbprint.charAt(0) == 'C'){
                     		Log.d(TAG, "Toggle contamination.");
                     		if (!contamination){
                     			contamination = true;
@@ -153,14 +179,15 @@ public class Titou extends Activity {
                     	}
                     	else if (sbprint.charAt(0) == 'M' && Character.isDigit(sbprint.charAt(1))){
                     		sbprint.replaceAll("\n", "");
-                    		int song = sbprint.charAt(1);
+                    		int song = Character.getNumericValue(sbprint.charAt(1));
                     		int BPM = Integer.parseInt(sbprint.substring(2, endOfLineIndex));
+                    		Log.d(TAG, "Song index " + Integer.toString(song));
                     		Log.d(TAG, "Raw BPM " + Integer.toString(BPM));
                     		if (BPM >= 200 )	BPM = 199;
                     		else if (BPM < 50) BPM = 50;
                     		int BPM_level = (int) Math.floor((float)BPM/25.00);
                     		BPM_level = BPM_level -2;
-                    		Log.d(TAG, "Adding entry with BPM " + Integer.toString(BPM) + "and Level " + Integer.toString(BPM_level));
+                    		Log.d(TAG, "Adding entry with BPM " + Integer.toString(BPM) + " and song " + songs[song][0] + " " + songs[song][1]);
                     		addEntryList(song,beat_img_list[BPM_level]);
                     		player.setBackgroundColor(Color.parseColor(back_color_list[BPM_level]));
                     	} 
@@ -177,6 +204,14 @@ public class Titou extends Activity {
             @Override
 			public void onClick(View v) {
             	//btnPlay.setEnabled(false);
+				if(isPlaying){
+					btnPlay.setImageResource(R.drawable.btn_play);
+					isPlaying = false;	
+				}
+				else{
+					btnPlay.setImageResource(R.drawable.btn_pause);
+					isPlaying = true;
+				}
             	mConnectedThread.writeBT("P");	// Send "1" via Bluetooth
             	//Toast.makeText(getBaseContext(), "Turn on LED", Toast.LENGTH_SHORT).show();
             }
@@ -223,8 +258,7 @@ public class Titou extends Activity {
             	mConnectedThread.writeBT("C");	// Send "1" via Bluetooth
             	//Toast.makeText(getBaseContext(), "Turn on LED", Toast.LENGTH_SHORT).show();
             }
-         });
-        
+         }); 
     }
     
     public void addEntryList(int song,int BPM_level){
