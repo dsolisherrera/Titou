@@ -1,3 +1,10 @@
+// "Titou Player" sketch for Lilypad MP3 Player
+// Ilaria Baggio, Master in Interaction Design, SUPSI
+// July,2014
+// Based on example sketches from:
+// Mike Grusin, SparkFun Electronics
+// Pulse Sensor Amped by Joel Murphy and Yury Gitman
+
 #include <SPI.h>
 #include <SdFat.h>
 #include <SdFatUtil.h>
@@ -6,21 +13,16 @@
 #include <OneButton.h>
 
 // Set debugging to true to get serial messages:
-
 boolean debugging = false;
 
-// Initial volume for the MP3 chip. 0 is the loudest, 255
-// is the lowest.
-
-unsigned char volume = 40;
+// Initial volume for the MP3 chip. 0 is the loudest, 255 is the lowest.
+unsigned char volume = 60;
 
 // Start up playing:
-
-boolean playing = true;
+boolean playing = false;
 
 // Set loop_all to true if you would like to automatically
 // start playing the next file after the current one ends:
-
 boolean loop_all = true;
 
 // LilyPad MP3 pin definitions:
@@ -52,7 +54,10 @@ boolean loop_all = true;
 
 // Global variables and flags for interrupt request functions:
 char track[13];
+char sound[13];
 char inChar;
+boolean local_action = true;
+boolean paused = false;
 
 volatile int BPM;                   // used to hold the pulse rate
 volatile int Signal;                // holds the incoming raw data
@@ -63,10 +68,8 @@ volatile boolean QS = false;
 //Sensor
 int pin_sensor = TRIG1;
 // Touch Button
-OneButton moment_button(ROT_LEDG);
+OneButton moment_button(TRIG3_SCL);
 OneButton audio_button(TRIG2_SDA);
-
-// Library objects:
 
 SdFat sd;
 SdFile file;
@@ -79,14 +82,12 @@ void setup(){
   Serial.begin(115200);
   if (debugging){
     Serial.begin(115200);
-    // ('F' places constant strings in program flash to save RAM)
     Serial.println(F("Lilypad MP3 Player"));
     Serial.print(F("Free RAM = "));
     Serial.println(FreeRam(), DEC);
   }
 
   // Set up I/O pins:
-  
   pinMode(MP3_CS, OUTPUT);
   pinMode(SHDN_GPIO1, OUTPUT);
   
@@ -100,24 +101,24 @@ void setup(){
   pinMode(MISO, INPUT);
   pinMode(SCK, OUTPUT);
  
+  // attach behavior to touch sensors
   moment_button.attachClick(moment_ClickFunction);  
   moment_button.attachDoubleClick(moment_DoubleClickFunction); 
     
   audio_button.attachClick(audio_ClickFunction);  
   audio_button.attachDoubleClick(audio_DoubleClickFunction);
   audio_button.attachTripleClick(audio_TripleClickFunction);
-  //audio_button.setClickTicks(600);
+
   interruptSetup(); 
  
  // Turn off amplifier chip / turn on MP3 mode:
-
   digitalWrite(SHDN_GPIO1, LOW);
 
   // Initialize the SD card:
-
   if (debugging) Serial.println(F("Initializing SD card... "));
 
-  result = sd.begin(SD_SEL, SPI_HALF_SPEED);
+  //result = sd.begin(SD_SEL, SPI_HALF_SPEED);
+  result = sd.begin(SD_SEL, SPI_FULL_SPEED);
 
   if (result != 1) {
     if (debugging) Serial.println(F("error, halting"));
@@ -126,12 +127,10 @@ void setup(){
     if (debugging) Serial.println(F("OK"));
  
   //Initialize the MP3 chip:
-  
   if (debugging) Serial.println(F("Initializing MP3 chip... "));
   result = MP3player.begin();
 
   // Check result, 0 and 6 are OK:
-  
   if((result != 0) && (result != 6)){
     if (debugging){
       Serial.print(F("error "));
@@ -141,8 +140,10 @@ void setup(){
   else
     if (debugging) Serial.println(F("OK"));
   
-  // Get initial track:
+  sd.chdir("sounds",true);
+  getBSoundFile();
   
+  // Get initial track:
   sd.chdir("/",true); // Index beginning of root directory
   getNextTrack();
   if (debugging){
@@ -151,7 +152,6 @@ void setup(){
   }
   
   // Set initial volume (same for both left and right channels)
-  
   MP3player.setVolume(volume, volume);
   
   // Uncomment to get a directory listing of the SD card:
@@ -160,21 +160,21 @@ void setup(){
   // Turn on amplifier chip:
   digitalWrite(SHDN_GPIO1, HIGH);
   delay(2);
-  startPlaying();
+  if (playing)
+    startPlaying();
 }
 
 void loop(){
-  
+  local_action = true;
   audio_button.tick();
   moment_button.tick();
-  // Handle "last track ended" situations
-  // (should we play the next track?)
   
   // Are we in "playing" mode, and has the
   // current file ended?
   if (Serial.available()){
     inChar = Serial.read();
     if (inChar =='P'){
+      local_action = false;
       audio_ClickFunction();
     }
     if (inChar =='N'){
@@ -185,12 +185,11 @@ void loop(){
     } 
   }
   
+  // Handle "last track ended" situations
+  // (should we play the next track?)
   if (playing && !MP3player.isPlaying()){
-    
-    getNextTrack(); // Set up for next track
-    // If loop_all is true, start the next track
     if (loop_all){
-      startPlaying();
+      audio_TripleClickFunction();
     }
     else
       playing = false;
@@ -202,23 +201,37 @@ void loop(){
 void audio_ClickFunction() {
   if (debugging) Serial.println(F("Audio - One click"));
   playing = !playing;
-  if (playing)
-    resumePlaying();
-    //startPlaying();
-  else
-    //stopPlaying();
+  if (playing){
+      resumePlaying();
+      paused = false;
+  }
+  else{
     pausePlaying();
+    paused = true;
+  }
+  if (local_action == true){
+    Serial.print('P');
+    Serial.print(track[0]);  
+    Serial.print('\n');
+  }
 } 
 
 // this function will be called when the button was pressed 2 times in a short timeframe.
 void audio_DoubleClickFunction(){
   if (debugging) Serial.println(F("Audio - Double click"));
-  if (playing)
+  if (playing || paused)
     stopPlaying();
   // Get the next file:
   getNextTrack();
+  
   // If we were previously playing, let's start again!
-  if (playing) startPlaying(); 
+  if (playing|| paused){
+    startPlaying();
+    playing = true;
+  }
+  Serial.print('S');
+  Serial.print(track[0]);
+  Serial.print('\n'); 
   if (debugging){
     Serial.print(F("current track "));
     Serial.println(track);
@@ -228,12 +241,18 @@ void audio_DoubleClickFunction(){
 // this function will be called when the button was pressed 3 times in a short timeframe.
 void audio_TripleClickFunction(){
   if (debugging) Serial.println(F("Audio - Triple click"));
-  if (playing)
+  if (playing || paused)
     stopPlaying();
   // Get the next file:
   getPrevTrack();
   // If we were previously playing, let's start again!
-  if (playing) startPlaying(); 
+  if (playing || paused){
+    startPlaying();
+    playing = true;
+  }
+  Serial.print('S');
+  Serial.print(track[0]);
+  Serial.print('\n');  
   if (debugging){
     Serial.print(F("current track "));
     Serial.println(track);
@@ -243,7 +262,9 @@ void audio_TripleClickFunction(){
 // this function will be called when the button was pressed 1 time and them some time has passed.
 void moment_ClickFunction() {
   //if (debugging) Serial.println(F("Moment - One click"));
+  playSound();
   Serial.print('M');
+  Serial.print(track[0]);
   Serial.print(BPM);
   Serial.print('\n');
 } 
@@ -255,26 +276,6 @@ void moment_DoubleClickFunction(){
   Serial.print('\n');
 } 
 
-
-void changeVolume(boolean direction){
-  // Increment or decrement the volume.
-  // This is handled internally in the VS1053 MP3 chip.
-  // Lower numbers are louder (0 is the loudest).
-  
-  if (volume < 255 && direction == false)
-    volume += 2;
-  
-  if (volume > 0 && direction == true)
-    volume -= 2;
-  MP3player.setVolume(volume, volume);
-
-  if (debugging){
-    Serial.print(F("volume "));
-    Serial.println(volume);
-  }
-}
-
-
 void getNextTrack(){
   // Get the next playable track (check extension to be
   // sure it's an audio file)
@@ -283,7 +284,6 @@ void getNextTrack(){
   while(isPlayable() != true);
 }
 
-
 void getPrevTrack(){
   // Get the previous playable track (check extension to be
   // sure it's an audio file)
@@ -291,7 +291,6 @@ void getPrevTrack(){
     getPrevFile();
   while(isPlayable() != true);
 }
-
 
 void getNextFile(){
   // Get the next file (which may be playable or not)
@@ -337,6 +336,50 @@ void getPrevFile(){
   while(strcasecmp(track,test) != 0);
   
   strcpy(track,prev);
+}
+
+
+void getBSoundFile(){
+  if (debugging) Serial.println(F("getting sound"));
+  int result = (file.openNext(sd.vwd(), O_READ));
+
+  // If we're at the end of the directory,
+  // loop around to the beginning:
+  
+  if (!result)
+  {
+    sd.chdir("sounds",true);
+    getBSoundFile();
+    return;
+  }
+  file.getFilename(sound);  
+  file.close();
+}
+
+void playSound(){
+  int result;
+  int32_t time;
+  if (debugging) Serial.println(F("playing moment sound"));
+  time = MP3player.currentPosition();
+  if (debugging) Serial.println(time);
+  MP3player.stopTrack();
+  sd.chdir("sounds",true);
+  result = MP3player.playMP3(sound);
+  while(result == 0){
+    if (!MP3player.isPlaying()){
+      break;
+    }
+  }
+  sd.chdir("/",true);
+  result = MP3player.playMP3(track);
+  result = MP3player.skip(time);
+  if(result != 0) {
+    Serial.print(F("Error code: "));
+    Serial.print(result);
+    Serial.println(F(" when trying to skip track"));
+  }
+
+  if (debugging) Serial.println(F("Finished playing moment sound"));
 }
 
 

@@ -1,3 +1,8 @@
+// "Titou Player" sketch for Lilypad MP3 Player
+// Ilaria Baggio, Master in Interaction Design, SUPSI
+// July,2014
+// Based on example sketches from:
+// Pulse Sensor Amped by Joel Murphy and Yury Gitman
 
 volatile int rate[10];                    // array to hold last ten IBI values
 volatile unsigned long sampleCounter = 0;          // used to determine pulse timing
@@ -9,7 +14,6 @@ volatile int amp = 100;                   // used to hold amplitude of pulse wav
 volatile boolean firstBeat = true;        // used to seed rate array so we startup with reasonable BPM
 volatile boolean secondBeat = false;      // used to seed rate array so we startup with reasonable BPM
 
-
 void interruptSetup(){     
   // Initializes Timer2 to throw an interrupt every 2mS.
   TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
@@ -18,7 +22,6 @@ void interruptSetup(){
   TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
   sei();             // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED      
 } 
-
 
 // THIS IS THE TIMER 2 INTERRUPT SERVICE ROUTINE. 
 // Timer 2 makes sure that we take a reading every 2 miliseconds
@@ -61,7 +64,6 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
         sei();                               // enable interrupts again
         return;                              // IBI value is unreliable so discard it
       }   
-
 
       // keep a running total of the last 10 IBI values
       word runningTotal = 0;                  // clear the runningTotal variable    
